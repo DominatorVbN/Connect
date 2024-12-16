@@ -18,7 +18,7 @@ struct BoxView: View {
                 .fill(.quaternary)
         case .filled(let byPlayerID):
             RoundedRectangle(cornerRadius: 4)
-                .fill(Color.pastelColor(for: byPlayerID, in: colorScheme))
+                .fill(Color.pastelColor(for: UUID(uuidString: byPlayerID.id) ?? UUID(), in: colorScheme))
         }
        
     }
@@ -28,6 +28,6 @@ struct BoxView: View {
 #Preview {
     BoxView(box: Box(top: 0, right: 5, bottom: 9, left: 2, type: .empty))
         .frame(width: 45, height: 45)
-    BoxView(box: Box(top: 0, right: 5, bottom: 9, left: 2, type: .filled(byPlayerID: UUID())))
+    BoxView(box: Box(top: 0, right: 5, bottom: 9, left: 2, type: .filled(byPlayerID: .random)))
         .frame(width: 45, height: 45)
 }

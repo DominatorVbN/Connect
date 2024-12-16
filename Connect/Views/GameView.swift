@@ -16,9 +16,9 @@ struct GameView: View {
         let model = GameViewModel()
         self._viewModel = .init(wrappedValue: model)
         self.playerName = playerName
-        self.player = .init(name: playerName, model: model)
-        model.player = player
-        model.opponent = BotPlayer()
+        self.player = .init(name: playerName, model: model, actorSystem: localNetworkSystem)
+        localNetworkSystem.receptionist.checkIn(player, tag: "static")
+        model.opponent = nil
     }
     
     let lineLenght: CGFloat = 44
@@ -32,7 +32,9 @@ struct GameView: View {
         VStack {
             if let opponent = viewModel.opponent {
                 opponentView(opponent: opponent)
-            } 
+            } else {
+                matchMakingView
+            }
             
             Divider()
                 .padding(44)
@@ -109,7 +111,7 @@ struct GameView: View {
             switch newValue {
             case .win(let playerId):
                 Task {
-                    if let name = viewModel.names(forPlayerIds: [playerId]).first {
+                    if let name = try await viewModel.names(forPlayerIds: [playerId]).first {
                         await MainActor.run {
                             gameResultMessage = "\(name) won!"
                             showingAlert = true
@@ -118,7 +120,7 @@ struct GameView: View {
                 }
             case .draw(let playerIds):
                 Task {
-                    let names = viewModel.names(forPlayerIds: playerIds).joined(separator: ", ")
+                    let names = try await viewModel.names(forPlayerIds: playerIds).joined(separator: ", ")
                     await MainActor.run {
                         gameResultMessage = "Draw between \(names)!"
                         showingAlert = true
@@ -132,13 +134,59 @@ struct GameView: View {
     
     func opponentView(opponent: any GamePlayer) -> some View {
         HStack {
-            AvatarView(id: player.id.uuidString, name: playerName, isOpponent: false, isOpponentTurn: viewModel.isGameDisabled)
+            AvatarView(id: player.id.id, name: playerName, isOpponent: false, isOpponentTurn: viewModel.isGameDisabled)
             Text("vs")
                 .bold()
-            AvatarView(id: opponent.id.uuidString, name: opponent.name, isOpponent: true, isOpponentTurn: viewModel.isGameDisabled)
+            AvatarView(id: opponent.id.id, name: viewModel.oppponentName, isOpponent: true, isOpponentTurn: viewModel.isGameDisabled)
+        }
+    }
+    
+    var matchMakingView: some View {
+        HStack {
+            ProgressView()
+                .padding(8)
+                .background {
+                    Capsule().fill(.quaternary)
+                }
+            Text("Looking for opponent 🔎")
+                .font(.title2)
+        }
+        .padding(8)
+        .background {
+            Capsule().fill(.quaternary)
+        }
+        .task {
+            await startMatchMaking()
         }
     }
 
+}
+
+// - MARK: Minimal logic helpers
+
+extension GameView {
+
+    /// Start match making by looking for a new opponent to play a game with.
+    ///
+    /// Note that this is a rather simple implementation, which does not take into account
+    /// that the discovered player may already be playing a game, or verifying that they indeed are a
+    /// player of the opposing team (we trust the receptionist to list the right opponents).
+    func startMatchMaking() async {
+        guard viewModel.opponent == nil else {
+            return
+        }
+    
+        /// The local network actor system provides a receptionist implementation that provides us an async sequence
+        /// of discovered actors (past and new)
+        let listing = await localNetworkSystem.receptionist.listing(of: DistributedPlayer.self, tag: "static")
+        for try await opponent in listing where opponent.id != self.player.id {
+            print("matchmaking", "Found opponent: \(opponent)")
+            viewModel.foundOpponent(opponent, myself: self.player, informOpponent: true)
+
+            return // make sure to return here, we only need to discover a single opponent
+        }
+    }
+    
 }
 
 

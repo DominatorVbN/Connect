@@ -5,7 +5,15 @@
 //  Created by Amit Samant on 06/12/24.
 //
 
+import Distributed
+import ActorSystem
 import SwiftUI
+
+/// Shared instance of the local networking sample actor system.
+///
+/// Note also that in `Info.plist` we must define the appropriate NSBonjourServices
+/// in order for the peer-to-peer nodes to be able to discover each other.
+let localNetworkSystem = LocalNetworkActorSystem(serviceName: "_connect._tcp")
 
 extension Color {
     static func pastelColor(for uuid: UUID, in colorScheme: ColorScheme) -> Color {

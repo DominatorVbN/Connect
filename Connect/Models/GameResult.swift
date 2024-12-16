@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import ActorSystem
 
 /// Result of a game round; A game can end in a draw or win of a specific player.
 public enum GameResult: Equatable {
-    case win(player: UUID)
-    case draw(players: [UUID])
+    case win(player: ActorIdentity)
+    case draw(players: [ActorIdentity])
 }
