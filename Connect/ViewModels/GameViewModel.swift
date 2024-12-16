@@ -159,7 +159,7 @@ public class GameViewModel: ObservableObject {
     func names(forPlayerIds playerIds: [ActorIdentity]) async throws -> [String] {
         var names: [String] = []
         for playerId in playerIds {
-            let player = try localNetworkSystem.resolve(id: playerId, as: DistubutedPlayer.self)
+            let player = try localNetworkSystem.resolve(id: playerId, as: DistributedPlayer.self)
             let name = try await player?.getName()
             if let name {
                 names.append(name)

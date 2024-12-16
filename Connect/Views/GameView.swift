@@ -178,7 +178,7 @@ extension GameView {
     
         /// The local network actor system provides a receptionist implementation that provides us an async sequence
         /// of discovered actors (past and new)
-        let listing = await localNetworkSystem.receptionist.listing(of: DistubutedPlayer.self, tag: "static")
+        let listing = await localNetworkSystem.receptionist.listing(of: DistributedPlayer.self, tag: "static")
         for try await opponent in listing where opponent.id != self.player.id {
             print("matchmaking", "Found opponent: \(opponent)")
             viewModel.foundOpponent(opponent, myself: self.player, informOpponent: true)

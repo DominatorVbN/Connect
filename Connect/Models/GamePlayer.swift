@@ -9,8 +9,8 @@ import Foundation
 import Distributed
 import ActorSystem
 
-public typealias MyPlayer = DistubutedPlayer
-public typealias OpponentPlayer = DistubutedPlayer
+public typealias MyPlayer = DistributedPlayer
+public typealias OpponentPlayer = DistributedPlayer
 
 public protocol GamePlayer: DistributedActor, Codable where ID == ActorIdentity {
 
@@ -23,7 +23,7 @@ public protocol GamePlayer: DistributedActor, Codable where ID == ActorIdentity 
     func getName() async throws -> String
 }
 
-public distributed actor DistubutedPlayer: GamePlayer {
+public distributed actor DistributedPlayer: GamePlayer {
     
     
     public typealias ActorSystem = LocalNetworkActorSystem
