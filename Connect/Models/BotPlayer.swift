@@ -8,9 +8,6 @@
 import Foundation
 
 public actor BotPlayer: Identifiable, GamePlayer {
-    public static func == (lhs: BotPlayer, rhs: BotPlayer) -> Bool {
-        lhs.id == rhs.id
-    }
     
     nonisolated public let id: UUID = UUID()
     public let name: String = "Bot Player"

@@ -17,7 +17,6 @@ struct GameView: View {
         self._viewModel = .init(wrappedValue: model)
         self.playerName = playerName
         self.player = .init(name: playerName, model: model)
-//        localNetworkSystem.receptionist.checkIn(player, tag: "static")
         model.player = player
         model.opponent = BotPlayer()
     }
