@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2878520A2D0F153800E9CD6A /* ActorSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 287852092D0F153800E9CD6A /* ActorSystem */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		285A92FF2CF4C701003EDF3C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,9 +33,22 @@
 		285A93082CF4C701003EDF3C /* ConnectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConnectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		285A93582D02E554003EDF3C /* Exceptions for "Connect" folder in "Connect" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 285A92ED2CF4C700003EDF3C /* Connect */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		285A92F02CF4C700003EDF3C /* Connect */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				285A93582D02E554003EDF3C /* Exceptions for "Connect" folder in "Connect" target */,
+			);
 			path = Connect;
 			sourceTree = "<group>";
 		};
@@ -52,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2878520A2D0F153800E9CD6A /* ActorSystem in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +130,7 @@
 			);
 			name = Connect;
 			packageProductDependencies = (
+				287852092D0F153800E9CD6A /* ActorSystem */,
 			);
 			productName = Connect;
 			productReference = 285A92EE2CF4C700003EDF3C /* Connect.app */;
@@ -196,6 +215,7 @@
 			mainGroup = 285A92E52CF4C700003EDF3C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				287852082D0F153800E9CD6A /* XCRemoteSwiftPackageReference "ActorSystem" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 285A92EF2CF4C700003EDF3C /* Products */;
@@ -401,6 +421,7 @@
 				DEVELOPMENT_TEAM = NWJALMT777;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Connect/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -430,6 +451,7 @@
 				DEVELOPMENT_TEAM = NWJALMT777;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Connect/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -560,6 +582,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		287852082D0F153800E9CD6A /* XCRemoteSwiftPackageReference "ActorSystem" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/DominatorVbN/ActorSystem.git";
+			requirement = {
+				kind = exactVersion;
+				version = 0.0.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		287852092D0F153800E9CD6A /* ActorSystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 287852082D0F153800E9CD6A /* XCRemoteSwiftPackageReference "ActorSystem" */;
+			productName = ActorSystem;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 285A92E62CF4C700003EDF3C /* Project object */;
 }

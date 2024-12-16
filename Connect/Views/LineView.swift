@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ActorSystem
 
 struct LineView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -14,7 +15,7 @@ struct LineView: View {
     var body: some View {
         if case let .selected(playerId) = line.type {
             Capsule()
-                .fill(Color.pastelColor(for: playerId, in: colorScheme))
+                .fill(Color.pastelColor(for: UUID(uuidString: playerId.id) ?? UUID(), in: colorScheme))
                 .frame(width: 40, height: 4)
         } else {
             Button {
@@ -45,7 +46,7 @@ struct LineView: View {
     LineView(line: Line(
         endpoint1: Dot(indexPath: IndexPath(row: 0, section: 0)),
         endpoint2: Dot(indexPath: IndexPath(row: 0, section: 1)),
-        type: .selected(byPlayerID: UUID())
+        type: .selected(byPlayerID: ActorIdentity.random)
     )) {
         
     }

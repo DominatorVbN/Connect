@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import Distributed
+import ActorSystem
 
-protocol PlayerBotAI: Equatable {
+protocol PlayerBotAI {
     mutating func decideNextMove(given gameState: inout GameState) throws -> GameMove
 }
 
@@ -39,16 +41,16 @@ extension GameState {
 }
 
 class RandomPlayerBotAI: PlayerBotAI {
-    static func == (lhs: RandomPlayerBotAI, rhs: RandomPlayerBotAI) -> Bool {
-        lhs.playerID == rhs.playerID
-    }
-    
-    let playerID: UUID
+    let playerID: ActorIdentity
     
     private var movesMade: Int = 0
     
-    init(playerID: UUID) {
+    init(playerID: ActorIdentity) {
         self.playerID = playerID
+    }
+    
+    init(playerID: LocalTestingDistributedActorSystem.ActorID) {
+        self.playerID = .init(id: playerID.id)
     }
     
     func decideNextMove(given gameState: inout GameState) throws -> GameMove {
