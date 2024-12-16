@@ -13,20 +13,13 @@ import ActorSystem
 public class GameViewModel: ObservableObject {
     
     @Published var gameState: GameState = GameState()
-    @Published var player: MyPlayer?
     @Published var opponent: OpponentPlayer?
     @Published var oppponentName: String? = nil
     @Published var waitingForOpponentMove: Bool = false
     @Published public var gameResult: GameResult?
     @Published public var lastMove: Selection? = nil
     
-    var playerMap: [UUID: GamePlayer] {
-        var map: [UUID: GamePlayer] = [:]
-        if let player { map[player.id] = player }
-        if let opponent { map[opponent.id] = opponent }
-        return map
-    }
-    
+
     var size: Int {
         gameState.size
     }
@@ -59,6 +52,19 @@ public class GameViewModel: ObservableObject {
             print("game-model", "Move failed, error: \(error)")
         }
         return gameResult
+    }
+    
+    public func foundOpponent(_ opponent: OpponentPlayer, myself: MyPlayer, informOpponent: Bool) {
+        self.opponent = opponent
+        Task {
+            self.oppponentName = try await opponent.getName()
+        }
+        // STEP 2: local multiplayer, enable telling the other player
+        if informOpponent {
+            Task {
+                try await opponent.startGameWith(opponent: myself, startTurn: false)
+            }
+        }
     }
     
     public func waitForOpponentMove(_ shouldWait: Bool) {
@@ -150,11 +156,11 @@ public class GameViewModel: ObservableObject {
         return gameState.boxes[boxIndex(row: indexPath.row, col: indexPath.section)]
     }
     
-    func names(forPlayerIds playerIds: [UUID]) -> [String] {
+    func names(forPlayerIds playerIds: [ActorIdentity]) async throws -> [String] {
         var names: [String] = []
         for playerId in playerIds {
-            let player = playerMap[playerId]
-            let name = player?.name
+            let player = try localNetworkSystem.resolve(id: playerId, as: DistubutedPlayer.self)
+            let name = try await player?.getName()
             if let name {
                 names.append(name)
             }

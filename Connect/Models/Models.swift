@@ -18,7 +18,7 @@ enum Player: Equatable {
 
 enum LineType: Equatable {
     case empty
-    case selected(byPlayerID: UUID)
+    case selected(byPlayerID: ActorIdentity)
 }
 
 struct Line: Equatable {
@@ -37,7 +37,7 @@ struct Line: Equatable {
 
 enum BoxType: Equatable {
     case empty
-    case filled(byPlayerID: UUID)
+    case filled(byPlayerID: ActorIdentity)
 }
 
 struct Box {

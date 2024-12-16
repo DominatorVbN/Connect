@@ -9,42 +9,38 @@ import Foundation
 import Distributed
 import ActorSystem
 
-public typealias MyPlayer = OfflineGamePlayer
-public typealias OpponentPlayer = BotPlayer
+public typealias MyPlayer = DistubutedPlayer
+public typealias OpponentPlayer = DistubutedPlayer
 
-public protocol GamePlayer {
-    var id: UUID { get }
-    var name: String { get }
+public protocol GamePlayer: DistributedActor, Codable where ID == ActorIdentity {
+
+    /// Ask this player to make a move of their own.
+    func makeMove() async throws -> GameMove
+    
+    /// Inform this player their opponent has made the passed `move`.
+    func opponentMoved(_ move: GameMove) async throws
+    
+    func getName() async throws -> String
 }
 
-public actor OfflineGamePlayer: GamePlayer {
-    nonisolated public let id: UUID = UUID()
-    public let name: String
+public distributed actor DistubutedPlayer: GamePlayer {
+    
+    
+    public typealias ActorSystem = LocalNetworkActorSystem
+    
+    let name: String
     let model: GameViewModel
+    let creationDate: Date
     var movesMade: Int = 0
     
-    public init(name: String, model: GameViewModel) {
+    public init(name: String, model: GameViewModel, actorSystem: ActorSystem) {
         self.name = name
         self.model = model
+        self.actorSystem = actorSystem
+        self.creationDate = Date()
     }
     
-    public func makeMove(_ selection: Selection) async throws -> GameMove {
-        let move = GameMove(playerID: id, selection: selection)
-        _ = await model.userMadeMove(move: move)
-        movesMade += 1
-        return move
-    }
-    
-    public func opponentMoved(_ move: GameMove) async throws {
-         do {
-             try await model.markOpponentMove(move)
-         } catch {
-             print("player", "Opponent made illegal move! \(move)")
-         }
-     }
-    
-    /// Poll move from UI by awaiting on user clicking one of the game fields.
-    public func makeMove() async throws -> GameMove {
+    public distributed func makeMove() async throws -> GameMove {
         let selection = await model.humanSelectedField()
         movesMade += 1
         let move = GameMove(
@@ -54,4 +50,43 @@ public actor OfflineGamePlayer: GamePlayer {
         return move
     }
     
+    public distributed func makeMove(_ selection: Selection) async throws -> GameMove {
+        let move = GameMove(playerID: id, selection: selection)
+        _ = await model.userMadeMove(move: move)
+        movesMade += 1
+        return move
+    }
+    
+    public distributed func opponentMoved(_ move: GameMove) async throws {
+        do {
+            try await model.markOpponentMove(move)
+        } catch {
+            print("player", "Opponent made illegal move! \(move)")
+        }
+    }
+
+    public distributed func startGameWith(opponent: OpponentPlayer, startTurn: Bool) async {
+        print("local-network-player", "Start game with \(opponent.id), startTurn:\(startTurn)")
+        await model.foundOpponent(opponent, myself: self, informOpponent: false)
+
+        print("local-network-player", "Wait for opponent move: self id: \(self.id)")
+        print("local-network-player", "Wait for opponent move: self id hash: \(self.id.hashValue)")
+
+        print("local-network-player", "Wait for opponent move: self id: \(opponent.id)")
+        print("local-network-player", "Wait for opponent move: self id hash: \(opponent.id.hashValue)")
+
+        print("local-network-player", "Wait for opponent move: \(self.id < opponent.id)")
+        print("local-network-player", "Wait for opponent move: \(self.id.hashValue < opponent.id.hashValue)")
+        // we use some arbitrary method to pick who goes first
+        await model.waitForOpponentMove(shouldWaitForOpponentMove(myselfID: self.id, opponentID: opponent.id))
+    }
+    
+    public distributed func getName() async -> String {
+        return name
+    }
+}
+
+
+func shouldWaitForOpponentMove(myselfID: ActorIdentity, opponentID: ActorIdentity) -> Bool {
+    myselfID.hashValue < opponentID.hashValue
 }

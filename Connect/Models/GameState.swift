@@ -99,7 +99,7 @@ struct GameState {
     }
     
     public mutating func checkWin() throws -> GameResult? {
-        var playerBoxCount: [UUID: Int] = [:]
+        var playerBoxCount: [ActorIdentity: Int] = [:]
         let allSatisfy = boxes.allSatisfy { box in
             guard case let .filled(playerId) = box.type else { return false }
             if let oldCount = playerBoxCount[playerId] {
@@ -126,7 +126,7 @@ struct GameState {
         }
     }
 
-    private mutating func checkAndSetTypeOfCompletedBox(_ playerID: UUID, lineIndex: Int) {
+    private mutating func checkAndSetTypeOfCompletedBox(_ playerID: ActorIdentity, lineIndex: Int) {
         for (boxIndex, box) in boxes.enumerated() where box.type == .empty && box.contains(lineIndex: lineIndex) {
             let topLine = horizontalLines[box.top]
             let bottomLine = horizontalLines[box.bottom]

@@ -6,11 +6,10 @@
 //
 
 import Foundation
+import ActorSystem
 
-public actor BotPlayer: Identifiable, GamePlayer {
-    
-    nonisolated public let id: UUID = UUID()
-    public let name: String = "Bot Player"
+public actor BotPlayer: Identifiable {
+    nonisolated public let id: ActorIdentity = .random
     
     var botAI: RandomPlayerBotAI
     var gameState: GameState
