@@ -1,0 +1,15 @@
+{
+  "originHash" : "d01904c39c649631d9e47cee07bb1153ead8191f7b0392f4712ed4fd7f2ec09b",
+  "pins" : [
+    {
+      "identity" : "actorsystem",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/DominatorVbN/ActorSystem.git",
+      "state" : {
+        "revision" : "d45bdf97fe9f252a083b73cce48ce625c9f3d1a2",
+        "version" : "0.0.4"
+      }
+    }
+  ],
+  "version" : 3
+}
